@@ -2,11 +2,16 @@
 #include<bits/stdc++.h> 
 #define COUNT 10  
 using namespace family;
+
+//funcs declare
 string convertNumToString(int num , char sex);
 void inorder(node* root,string name,node** ptr);
 void print2D(node *root);
-void deleteTree(node** node);  
-//node constructor
+void deleteTree(node** node);
+
+//NODE------------------------------
+
+//node constructor 
 node:: node(string name){
     this->name=name;
     this->father=NULL;
@@ -20,6 +25,7 @@ void node::addF(string name){
     this->father->child=this;
     this->father->sex = 'm';
     }else{
+        //if exsist father
         throw exception();
     }
     
@@ -30,12 +36,13 @@ void node::addM(string name){
     this->mother->child=this;
     this->mother->sex = 'f';
     }else{
+        //if exsist mother
         throw exception();
     }
 }
 
 
-
+//TREE---------------------------------
 
 //Tree constructor
 
@@ -59,12 +66,14 @@ Tree& Tree:: addFather(string name,string father){
           
     }else{
         node* ptr =NULL;
+        //search the name
          search(name,&ptr);
+       //if not exsist
         if(ptr != NULL){
             ptr->addF(father);
         
         }else{
-           
+           //if exsist
             throw exception();
         }
     }
@@ -105,13 +114,14 @@ string Tree::relation(string name)
 {
     node* ptr = NULL;
     search(name,&ptr);
+    //if not exsist
      if(ptr == NULL){
         return string("unrelated");
     }
+
+
     char sex = ptr->sex;
     int counter = 0;
-   
-
    
     while(ptr->child != NULL){
         counter++;
@@ -124,10 +134,13 @@ string Tree::relation(string name)
 //find method
 string Tree::find(string relation){
     node* ptr =NULL;
+    //regular search for the relation
     inorderFind(this->root,relation,&ptr);
+
     if(ptr != NULL){
         return ptr->name;
     }else{
+        //if not exsist
        throw exception();
     }
 
@@ -148,60 +161,7 @@ void Tree::remove(string name){
     }
     
 }
-
-//copy from https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
-
-void print2DUtil(node *root, int space)  
-{  
-    // Base case  
-    if (root == NULL)  
-        return;  
-  
-    // Increase distance between levels  
-    space += COUNT;  
-  
-    // Process right child first  
-    print2DUtil(root->father, space);  
-  
-    // Print current node after space  
-    // count  
-    cout<<endl;  
-    for (int i = COUNT; i < space; i++)  
-        cout<<" ";  
-    cout<<root->name<<"\n";  
-  
-    // Process left child  
-    print2DUtil(root->mother, space);  
-}  
-  
-// Wrapper over print2DUtil()  
-void print2D(node *root)  
-{  
-    // Pass initial space count as 0  
-    print2DUtil(root, 0);  
-}  
-
-
-//copy from geeeksforgeeks
-void inorder(node* root,string name,node** ptr) 
-{ 
-    if (root == NULL) 
-        return; 
-  
-    /* first recur on left child */
-    inorder(root->mother,name,ptr); 
-  
-    
-    if(*ptr==NULL){
-        if(root->name == string(name)){
-            *ptr=root;
-        }
-    }
-  
-    /* now recur on right child */
-    inorder(root->father,name,ptr); 
-} 
-
+//find helpFun
 void Tree::inorderFind(node* root,string relation,node** ptr) 
 { 
     if (root == NULL) 
@@ -269,20 +229,38 @@ string convertNumToString(int num , char sex){
     return " ";
 }
 
-//copy from https://stackoverflow.com/questions/42799209/fastest-way-to-delete-a-binary-tree-in-c
+void inorder(node* root,string name,node** ptr) 
+{ 
+    if (root == NULL) 
+        return; 
+
+    inorder(root->mother,name,ptr); 
+  
+    
+    if(*ptr==NULL){
+        if(root->name == string(name)){
+            *ptr=root;
+        }
+    }
+
+    inorder(root->father,name,ptr); 
+} 
+
+
 void _deleteTree(struct node* node)
 {
        if (node->mother)
        {
              _deleteTree(node->mother);
-            // node->mother->name="";
+          
              free(node->mother);
              node->mother=NULL;
        }
+
        if (node->father)
        {
              _deleteTree(node->father);
-            // node->father->name="";
+         
              free(node->father);
              node->father=NULL;
        }
@@ -306,3 +284,41 @@ void deleteTree(node** node_ref)
           
      }
 }
+//copy from https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
+
+void print2DUtil(node *root, int space)  
+{  
+    // Base case  
+    if (root == NULL)  
+        return;  
+  
+    // Increase distance between levels  
+    space += COUNT;  
+  
+    // Process right child first  
+    print2DUtil(root->father, space);  
+  
+    // Print current node after space  
+    // count  
+    cout<<endl;  
+    for (int i = COUNT; i < space; i++)  
+        cout<<" ";  
+    cout<<root->name<<"\n";  
+  
+    // Process left child  
+    print2DUtil(root->mother, space);  
+}  
+  
+// Wrapper over print2DUtil()  
+void print2D(node *root)  
+{  
+    // Pass initial space count as 0  
+    print2DUtil(root, 0);  
+}  
+
+
+
+
+
+
+
